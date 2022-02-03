@@ -3,7 +3,7 @@ from m3_ext.ui import all_components as ext
 
 from .models import Person
 from django.contrib.auth.models import User, Group, Permission, ContentType
-from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.models import ContentType
 
 
 class UserEditWindow(BaseEditWindow):
@@ -45,12 +45,14 @@ class UserEditWindow(BaseEditWindow):
         self.field__last_login = ext.ExtDateField(
             label=u'last login',
             name='last_login',
-            anchor='100%')
+            anchor='100%',
+            format='d.m.Y')
 
         self.field__date_joined = ext.ExtDateField(
             label=u'date joined',
-            name='last_login',
-            anchor='100%')
+            name='date_joined',
+            anchor='100%',
+            format='d.m.Y')
 
         self.field__is_superuser = ext.ExtCheckBox(
             label=u'superuser status',
@@ -95,6 +97,62 @@ class UserEditWindow(BaseEditWindow):
         self.height = 'auto'
 
 
+class PersonAddWindow(BaseEditWindow):
+
+    def _init_components(self):
+        """
+        Здесь следует инициализировать компоненты окна и складывать их в
+        :attr:`self`.
+        """
+        super(PersonAddWindow, self)._init_components()
+
+        self.field__name = ext.ExtStringField(
+            label=u'Имя',
+            name='name',
+            allow_blank=False,
+            anchor='100%')
+
+        self.field__surname = ext.ExtStringField(
+            label=u'Фамилия',
+            name='surname',
+            allow_blank=False,
+            anchor='100%')
+
+        self.field__gender = make_combo_box(
+            label=u'Пол',
+            name='gender',
+            allow_blank=False,
+            anchor='100%',
+            data=Person.GENDERS)
+
+        self.field__birthday = ext.ExtDateField(
+            label=u'Дата рождения',
+            name='birthday',
+            anchor='100%',
+            format='d.m.Y')
+
+    def _do_layout(self):
+        """
+        Здесь размещаем компоненты в окне
+        """
+        super(PersonAddWindow, self)._do_layout()
+        self.form.items.extend((
+            self.field__name,
+            self.field__surname,
+            self.field__gender,
+            self.field__birthday,
+        ))
+
+    def set_params(self, params):
+        """
+        Установка параметров окна
+
+        :params: Словарь с параметрами, передается из пака
+        """
+        super(PersonAddWindow, self).set_params(params)
+        self.height = 'auto'
+
+
 class PermissionEditWindow(BaseEditWindow):
 
     def _init_components(self):
@@ -111,26 +169,25 @@ class PermissionEditWindow(BaseEditWindow):
             anchor='100%')
 
         """TODO: Починить выпадающий список ContentType"""
+        # selected = Permission.objects.select_related('content_type').values()
+        # content_type_ids = []
+        # for i in selected:
+        #     content_type_ids.append(i['content_type_id'])
+        #     print(i)
+        # print(content_type_ids)
+        content_types = ContentType.objects.values_list('id', 'model')
+        my_choices = ()
+        final_choices = ()
 
-        queryset = ContentType.objects.all()
-        content_types = []
-        print(queryset)
-        for item in queryset:
-            content_types.append((item.id, item))
-            print(item)
-            print(item.id)
-        # self.field__content_type = ext.ExtStringField(
-        #     label=u'python model class name',
-        #     name='content_type',
-        #     allow_blank=False,
-        #     anchor='100%',)
+        for item in content_types:
+            final_choices += (item,) + my_choices
 
         self.field__content_type = make_combo_box(
             label=u'python model class name',
-            name='content_type',
+            name='content_type_id',
             allow_blank=False,
             anchor='100%',
-            data=Person.GENDERS)
+            data=final_choices)
 
         self.field__codename = ext.ExtStringField(
             label=u'codename',
