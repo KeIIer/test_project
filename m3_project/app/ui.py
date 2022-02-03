@@ -1,6 +1,7 @@
 from objectpack.ui import BaseEditWindow, make_combo_box
 from m3_ext.ui import all_components as ext
 
+from .models import Person
 from django.contrib.auth.models import User, Group, Permission, ContentType
 from django.contrib.contenttypes.models import ContentType
 
@@ -66,7 +67,6 @@ class UserEditWindow(BaseEditWindow):
             name='is_active',
             anchor='100%')
 
-
     def _do_layout(self):
         """
         Здесь размещаем компоненты в окне
@@ -111,14 +111,28 @@ class PermissionEditWindow(BaseEditWindow):
             anchor='100%')
 
         """TODO: Починить выпадающий список ContentType"""
+
+        queryset = ContentType.objects.all()
+        content_types = []
+        print(queryset)
+        for item in queryset:
+            content_types.append((item.id, item))
+            print(item)
+            print(item.id)
+        # self.field__content_type = ext.ExtStringField(
+        #     label=u'python model class name',
+        #     name='content_type',
+        #     allow_blank=False,
+        #     anchor='100%',)
+
         self.field__content_type = make_combo_box(
-            label=u'content type',
+            label=u'python model class name',
             name='content_type',
             allow_blank=False,
             anchor='100%',
-            data=ContentType.objects.all())
+            data=Person.GENDERS)
 
-        self.field__codename = ext.ExtDictSelectField(
+        self.field__codename = ext.ExtStringField(
             label=u'codename',
             name='codename',
             allow_blank=False,
