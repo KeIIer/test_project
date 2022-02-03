@@ -119,18 +119,19 @@ class PermissionEditWindow(BaseEditWindow):
             content_types.append((item.id, item))
             print(item)
             print(item.id)
-        # self.field__content_type = ext.ExtStringField(
-        #     label=u'python model class name',
-        #     name='content_type',
-        #     allow_blank=False,
-        #     anchor='100%',)
 
-        self.field__content_type = make_combo_box(
+        self.field__content_type = ext.ExtStringField(
             label=u'python model class name',
             name='content_type',
             allow_blank=False,
-            anchor='100%',
-            data=Person.GENDERS)
+            anchor='100%',)
+
+        # self.field__content_type = make_combo_box(
+        #     label=u'python model class name',
+        #     name='content_type',
+        #     allow_blank=False,
+        #     anchor='100%',
+        #     data=content_types)
 
         self.field__codename = ext.ExtStringField(
             label=u'codename',
