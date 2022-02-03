@@ -1,0 +1,9 @@
+Django==2.2
+m3-builder==1.2.0
+m3-core==2.2.24
+m3-django-compat==1.9.2
+m3-objectpack==2.2.47
+m3-ui==2.2.100
+pytz==2021.3
+six==1.16.0
+sqlparse==0.4.2
