@@ -168,19 +168,11 @@ class PermissionEditWindow(BaseEditWindow):
             allow_blank=False,
             anchor='100%')
 
-        """TODO: Починить выпадающий список ContentType"""
-        # selected = Permission.objects.select_related('content_type').values()
-        # content_type_ids = []
-        # for i in selected:
-        #     content_type_ids.append(i['content_type_id'])
-        #     print(i)
-        # print(content_type_ids)
         content_types = ContentType.objects.values_list('id', 'model')
-        my_choices = ()
         final_choices = ()
 
         for item in content_types:
-            final_choices += (item,) + my_choices
+            final_choices += (item,)
 
         self.field__content_type = make_combo_box(
             label=u'python model class name',
